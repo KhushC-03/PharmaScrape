@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link href='https://fonts.googleapis.com/css?family=Inter' rel='stylesheet'>
+    <title>Search Bar with Autocomplete</title>
+    <style>
+		html{
+			font-family:'Inter';
+		}
+        #search-results {
+            display: none;
+            position: absolute;
+            background-color: white;
+            border: 1px solid #ccc;
+            max-height: 200px;
+            overflow-y: auto;
+            width: calc(100% - 2px);
+        }
+        #search-results ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+        #search-results li {
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+        #search-results li:hover {
+            background-color: #f0f0f0;
+        }
+		.severity dd, .severity dt {
+			display: inline;
+			margin: 0 .5rem 0 0;
+		}
+		.interactionlist{
+			border-bottom: 3px solid #000000;
+		}
+		dt{
+			font-weight: bold;
+		}
+    </style>
+</head>
+<body>
+<h1>Search Interactions</h1>
+<input type="text" id="search" placeholder="Search...">
+<div id="search-results"></div>
+
+
+<ol class="allInteractions" style="list-style-type: none;">
+	<li class="interactionlist">
+		<h3 class="interacton-title">Carbamazepine</h3>
+		<ul class="interaction-information">
+		<li class="Interaction-module--message">
+		<p class="interaction-message">Carbamazepine is predicted to decrease the exposure to Abacavir. Manufacturer makes no recommendation.  </p>
+				<dl class="severity">
+					<dt>Severity:</dt>
+					<dd>Moderate</dd>
+					<dt>Evidence:</dt>
+					<dd>Theoretical</dd>
+				</dl>
+		</li>
+		</ul>
+	</li>
+	<li class="interactionlist">
+		<h3 class="interacton-title">Carbamazepine</h3>
+		<ul class="interaction-information">
+		<li class="Interaction-module--message">
+		<p class="interaction-message">Carbamazepine is predicted to decrease the exposure to Abacavir. Manufacturer makes no recommendation.  </p>
+		<p class="interaction-message">Carbamazepine is predicted to decrease the exposure to Abacavir. Manufacturer makes no recommendation.  </p>
+
+				<dl class="severity">
+					<dt>Severity:</dt>
+					<dd>Moderate</dd>
+					<dt>Evidence:</dt>
+					<dd>Theoretical</dd>
+				</dl>
+		</li>
+		</ul>
+	</li>
+</ol>
+<script>
+    const searchInput = document.getElementById('search');
+    const searchResults = document.getElementById('search-results');
+
+    searchInput.addEventListener('input', function() {
+        const query = this.value.trim();
+
+        if (query.length === 0) {
+            searchResults.style.display = 'none';
+            return;
+        }
+
+        fetch(`http://127.0.0.1:8080/search?search=${query}`)
+            .then(response => response.json())
+            .then(data => {
+                displayResults(data);
+            })
+            .catch(error => console.error('Error fetching data:', error));
+    });
+
+    function displayResults(results) {
+		console.log(results);
+        searchResults.innerHTML = '';
+        if (results.length === 0) {
+            searchResults.style.display = 'none';
+            return;
+        }
+        const ul = document.createElement('ul');
+        results.forEach(result => {
+            const li = document.createElement('li');
+            const link = document.createElement('a');
+            link.textContent = result;
+            link.href = `http://127.0.0.1:8080/interaction?interaction=${result}`;
+            li.appendChild(link);
+            ul.appendChild(li);
+        });
+        searchResults.appendChild(ul);
+        searchResults.style.display = 'block';
+    }
+</script>
+
+	</body>	
+</html>
+
+
+
+
+
+
